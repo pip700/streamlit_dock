@@ -1,28 +1,80 @@
-````markdown
 # 🧬 Vina-GPU Virtual Screening Pipeline
 
-Professional molecular docking Streamlit app for computational biologists.
+> Professional molecular docking Streamlit app for computational biologists.
 
-## Features
+---
 
-- **6-Page Sidebar Navigation**: Ligand Prep → Protein Prep → Grid → Docking → Pose Viewer → Results
-- **Auto-refresh**: Automatic page navigation after key steps (ligand prep, protein prep, grid definition, docking)
-- **Atom-wise RMSD**: MCS-based atom mapping (PyMOL-like) with 3 fallback methods
-- **3D Pose Viewer**: Interactive py3Dmol visualization with reference overlay
-- **Interaction Analysis**: ProLIF-based residue-level interaction detection + comparison
-- **Reference Ligand Redocking**: Included in docking step, RMSD computed automatically
-- **Vina CPU/GPU**: Auto-detects available engine; falls back to Vina CPU
+# Table of Contents
 
-## Quick Start
+- [Features](#features)
+- [Quick Start](#quick-start)
+  - [Docker Container (Recommended)](#docker-container-recommended)
+- [Pipeline Steps](#pipeline-steps)
+  - [1. Ligand Preparation](#1--ligand-preparation)
+  - [2. Protein Preparation](#2--protein-preparation)
+  - [3. Grid Generation](#3--grid-generation)
+  - [4. Docking](#4--docking)
+  - [5. Pose Viewer](#5--pose-viewer)
+  - [6. Results](#6--results)
+- [RMSD Calculation](#rmsd-calculation)
+- [Interaction Analysis](#interaction-analysis)
+- [Directory Structure](#directory-structure)
+- [Dependencies](#dependencies)
 
-### Docker conatiner (Recommended)
+---
+
+# Features
+
+- ✅ **6-Page Sidebar Navigation**
+  - Ligand Prep
+  - Protein Prep
+  - Grid
+  - Docking
+  - Pose Viewer
+  - Results
+
+- ✅ **Auto-refresh**
+  - Automatic page navigation after:
+    - Ligand preparation
+    - Protein preparation
+    - Grid definition
+    - Docking
+
+- ✅ **Atom-wise RMSD**
+  - MCS-based atom mapping (PyMOL-like)
+  - Three fallback methods
+
+- ✅ **3D Pose Viewer**
+  - Interactive **py3Dmol** visualization
+  - Reference ligand overlay
+
+- ✅ **Interaction Analysis**
+  - ProLIF-based residue-level interaction detection
+  - Side-by-side comparison with reference ligand
+
+- ✅ **Reference Ligand Redocking**
+  - Included in docking step
+  - RMSD computed automatically
+
+- ✅ **Vina CPU/GPU**
+  - Automatically detects available docking engine
+  - Falls back to Vina CPU when GPU/OpenCL is unavailable
+
+---
+
+# Quick Start
+
+## Docker Container (Recommended)
 
 The easiest way to run the application is using the pre-built Docker image.
 
-**Requirements**
+### Requirements
+
 - Docker installed
 - NVIDIA Container Toolkit (for GPU acceleration)
-- NVIDIA GPU (optional; CPU fallback is supported)
+- NVIDIA GPU *(optional; CPU fallback is fully supported)*
+
+Run:
 
 ```bash
 docker run -it --rm \
@@ -32,110 +84,249 @@ docker run -it --rm \
   ghcr.io/pip700/dock:v1
 ```
 
-Once the container starts, open:
+After the container starts, open:
 
 ```
 http://localhost:8501
 ```
 
+---
 
-## Pipeline Steps
+# Pipeline Steps
 
-### 1. 🧪 Ligand Prep (`1_ligand_prepared/`)
-- Input: SMILES, CSV/TSV upload, or PubChem CID/name
-- Generates 3D conformers → PDBQT via Meeko/obabel/RDKit
-- Computes MW, LogP, HBD, HBA, TPSA
+## 1. 🧪 Ligand Preparation (`1_ligand_prepared/`)
 
-### 2. 🧬 Protein Prep (`2_receptor_prepared/`)
-- Input: PDB ID or upload
-- Interactive chain/ligand selection with 3D preview
+### Input
+
+- SMILES
+- CSV/TSV upload
+- PubChem CID
+- PubChem compound name
+
+### Workflow
+
+- Generate 3D conformers
+- Convert to PDBQT using:
+  - Meeko
+  - Open Babel
+  - RDKit
+
+### Calculates
+
+- Molecular Weight (MW)
+- LogP
+- HBD
+- HBA
+- TPSA
+
+---
+
+## 2. 🧬 Protein Preparation (`2_receptor_prepared/`)
+
+### Input
+
+- PDB ID
+- Uploaded protein structure
+
+### Workflow
+
+- Interactive chain selection
+- Ligand selection
+- 3D preview
 - Extract reference ligand for RMSD calculation
-- Generates receptor PDBQT via prepare_receptor/obabel
+- Generate receptor PDBQT using:
+  - prepare_receptor
+  - Open Babel
 
-### 3. 📐 Grid Generation
-- Three modes: From reference ligand, Manual, Blind (whole protein)
-- Live 3D preview with grid box overlay
-- Auto-navigates to Docking after grid definition
+---
 
-### 4. 🚀 Docking (`4_docking/`)
-- Includes reference ligand option for RMSD comparison
-- Vina CPU (default) or Vina-GPU (if NVIDIA GPU + OpenCL available)
-- Auto-navigates to Pose Viewer after completion
+## 3. 📐 Grid Generation
+
+Three available modes:
+
+1. Reference ligand
+2. Manual coordinates
+3. Blind docking (whole protein)
+
+### Features
+
+- Live 3D preview
+- Grid box overlay
+- Automatically navigates to Docking after grid definition
+
+---
+
+## 4. 🚀 Docking (`4_docking/`)
+
+### Features
+
+- Optional reference ligand docking
+- Automatic RMSD comparison
+- Supports:
+  - Vina CPU
+  - Vina-GPU (NVIDIA GPU + OpenCL)
+- Automatically navigates to Pose Viewer after docking
 - RMSD displayed immediately after docking
 
-### 5. 🎯 Pose Viewer
-- Interactive 3D viewer with reference (green) + docked pose (red)
-- Residue-level interaction analysis (Hydrophobic, H-bond, π-stacking, etc.)
+---
+
+## 5. 🎯 Pose Viewer
+
+### Interactive 3D Visualization
+
+- Reference ligand (green)
+- Docked pose (red)
+
+### Interaction Analysis
+
+Residue-level interaction detection including:
+
+- Hydrophobic
+- Hydrogen bonds
+- π-Stacking
+- Metal interactions
+- Additional ProLIF-supported interactions
+
+### Additional Analysis
+
 - Side-by-side comparison with reference ligand
 - Tanimoto similarity scoring
 
-### 6. 📊 Results (`5_results/`)
-- Full results table with ranking, ddG, drug-likeness
+---
+
+## 6. 📊 Results (`5_results/`)
+
+Includes:
+
+- Full ranked docking table
+- ΔΔG values
+- Drug-likeness properties
 - Interaction fingerprint heatmap
 - Tanimoto similarity table
-- CSV/JSON download + summary plots
+- Summary plots
 
-## RMSD Calculation
+### Export
 
-The `RMSDCalculator` uses three methods tried in order:
+- CSV
+- JSON
 
-1. **MCS-based atom mapping** (most accurate, PyMOL-like):
-   - Finds Maximum Common Substructure between crystal and docked poses
-   - Maps atoms via MCS match
-   - Aligns using RDKit `AlignMol` with atom map
-   - Best for: Different protonation states, flexible ligands
+---
 
-2. **RDKit simple AlignMol** (fast, same-molecule assumption):
-   - Assumes atoms are in the same order
-   - Quick alignment and RMSD
+# RMSD Calculation
 
-3. **Element-matched Kabsch** (fallback):
-   - Groups atoms by element
-   - Greedy nearest-neighbor matching
-   - Kabsch rotation + RMSD
+The `RMSDCalculator` performs RMSD calculation using three progressively applied methods.
 
-## Interaction Analysis
+---
 
-Uses **ProLIF v2.2.0** for residue-level interaction detection:
+## Method 1 — MCS-Based Atom Mapping *(Most Accurate / PyMOL-like)*
 
-- Hydrophobic, VdWContact
-- HBDonor, HBAcceptor, ImplicitHBDonor, ImplicitHBAcceptor
-- PiStacking, EdgeToFace, FaceToFace
-- Anionic, Cationic, CationPi, PiCation
-- MetalAcceptor, MetalDonor
+Workflow:
 
-Falls back to RDKit-based and coordinate-based detection if ProLIF fails.
+- Finds the Maximum Common Substructure (MCS)
+- Maps atoms between crystal and docked ligand
+- Aligns structures using RDKit `AlignMol` with atom mapping
 
-## Directory Structure
+Best suited for:
+
+- Different protonation states
+- Flexible ligands
+- Different atom ordering
+
+---
+
+## Method 2 — RDKit Simple AlignMol
+
+Workflow:
+
+- Assumes identical atom ordering
+- Performs direct alignment
+- Computes RMSD quickly
+
+Best suited for:
+
+- Same molecule
+- Same atom indexing
+
+---
+
+## Method 3 — Element-Matched Kabsch Alignment
+
+Workflow:
+
+- Groups atoms by element
+- Greedy nearest-neighbor atom matching
+- Performs Kabsch rotation
+- Computes RMSD
+
+Used as the final fallback method.
+
+---
+
+# Interaction Analysis
+
+Interaction analysis is performed using **ProLIF v2.2.0**.
+
+Detected interaction types include:
+
+- Hydrophobic
+- VdWContact
+- HBDonor
+- HBAcceptor
+- ImplicitHBDonor
+- ImplicitHBAcceptor
+- PiStacking
+- EdgeToFace
+- FaceToFace
+- Anionic
+- Cationic
+- CationPi
+- PiCation
+- MetalAcceptor
+- MetalDonor
+
+If ProLIF fails, the pipeline automatically falls back to:
+
+- RDKit-based interaction detection
+- Coordinate-based interaction detection
+
+---
+
+# Directory Structure
 
 ```text
 vs_workspace/
-├── 1_ligand_prepared/    # Ligand PDBQT files
+├── 1_ligand_prepared/          # Ligand PDBQT files
 │   └── ligands/
-├── 2_receptor_prepared/  # Receptor PDBQT + reference ligand
+│
+├── 2_receptor_prepared/        # Receptor PDBQT + reference ligand
 │   ├── receptor/
 │   └── ref_E20_A_601.pdb
-├── 4_docking/            # Docking outputs
+│
+├── 4_docking/
 │   ├── ligands/
 │   ├── receptor/
-│   ├── output/           # *_out.pdbqt files
+│   ├── output/                 # *_out.pdbqt files
 │   └── results/
-└── 5_results/            # Final reports + plots
+│
+└── 5_results/
+    └── Final reports + plots
 ```
 
-## Dependencies
+---
+
+# Dependencies
 
 | Package | Purpose |
-|---------|---------|
-| streamlit | Web UI |
-| rdkit | Cheminformatics, 3D conformers, RMSD |
-| openbabel-wheel | PDB/PDBQT conversion |
-| prolif | Interaction analysis |
-| mdanalysis | Structure parsing for ProLIF |
-| py3Dmol | Interactive 3D visualization |
-| scipy | Statistical analysis, Kabsch alignment |
-| scikit-learn | PCA, clustering |
-| matplotlib/seaborn | Plots |
-| pubchempy | PubChem lookup |
+|----------|----------|
+| **streamlit** | Web UI |
+| **rdkit** | Cheminformatics, 3D conformers, RMSD |
+| **openbabel-wheel** | PDB/PDBQT conversion |
+| **prolif** | Interaction analysis |
+| **mdanalysis** | Structure parsing for ProLIF |
+| **py3Dmol** | Interactive 3D visualization |
+| **scipy** | Statistical analysis, Kabsch alignment |
+| **scikit-learn** | PCA, clustering |
+| **matplotlib / seaborn** | Plot generation |
+| **pubchempy** | PubChem compound lookup |
 
-
+---
