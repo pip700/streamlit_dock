@@ -1,3 +1,4 @@
+````markdown
 # 🧬 Vina-GPU Virtual Screening Pipeline
 
 Professional molecular docking Streamlit app for computational biologists.
@@ -14,10 +15,29 @@ Professional molecular docking Streamlit app for computational biologists.
 
 ## Quick Start
 
+### Docker conatiner (Recommended)
+
+The easiest way to run the application is using the pre-built Docker image.
+
+**Requirements**
+- Docker installed
+- NVIDIA Container Toolkit (for GPU acceleration)
+- NVIDIA GPU (optional; CPU fallback is supported)
+
 ```bash
-pip install -r requirements.txt
-streamlit run app.py
+docker run -it --rm \
+  --gpus all \
+  -p 8501:8501 \
+  -v $(pwd):/workspace \
+  ghcr.io/pip700/dock:v1
 ```
+
+Once the container starts, open:
+
+```
+http://localhost:8501
+```
+
 
 ## Pipeline Steps
 
@@ -88,7 +108,7 @@ Falls back to RDKit-based and coordinate-based detection if ProLIF fails.
 
 ## Directory Structure
 
-```
+```text
 vs_workspace/
 ├── 1_ligand_prepared/    # Ligand PDBQT files
 │   └── ligands/
@@ -118,9 +138,4 @@ vs_workspace/
 | matplotlib/seaborn | Plots |
 | pubchempy | PubChem lookup |
 
-## Troubleshooting
 
-- **"No docking engine found"**: Install AutoDock Vina: `conda install -c conda-forge autodock-vina`
-- **"obabel not found"**: Install OpenBabel: `pip install openbabel-wheel`
-- **3D viewer not loading**: Check browser compatibility; py3Dmol requires WebGL
-- **Limited interactions detected**: ProLIF detects more interactions with explicit hydrogens; try protonating your PDB with `obabel input.pdb -opdb -p 7.4 -O output.pdb`
