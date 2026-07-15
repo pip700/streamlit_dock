@@ -77,17 +77,17 @@ The easiest way to run the application is using the pre-built Docker image.
 Run:
 
 ```bash
-docker run -it --rm \
+docker run -d --rm \
   --gpus all \
-  -p 8501:8501 \
+  -p 8500:8501 \
   -v $(pwd):/workspace \
-  ghcr.io/pip700/dock:v1
+  ghcr.io/pip700/dock:v2
 ```
 
 After the container starts, open:
 
 ```
-http://localhost:8501
+http://localhost:8500
 ```
 
 ---
@@ -289,28 +289,6 @@ If ProLIF fails, the pipeline automatically falls back to:
 - RDKit-based interaction detection
 - Coordinate-based interaction detection
 
----
-
-# Directory Structure
-
-```text
-vs_workspace/
-├── 1_ligand_prepared/          # Ligand PDBQT files
-│   └── ligands/
-│
-├── 2_receptor_prepared/        # Receptor PDBQT + reference ligand
-│   ├── receptor/
-│   └── ref_E20_A_601.pdb
-│
-├── 4_docking/
-│   ├── ligands/
-│   ├── receptor/
-│   ├── output/                 # *_out.pdbqt files
-│   └── results/
-│
-└── 5_results/
-    └── Final reports + plots
-```
 
 ---
 
