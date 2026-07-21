@@ -81,7 +81,7 @@ docker run -d --rm \
   --gpus all \
   -p 8500:8501 \
   -v $(pwd):/workspace \
-  ghcr.io/pip700/dock:v2
+  ghcr.io/pip700/dock:v4
 ```
 
 After the container starts, open:
