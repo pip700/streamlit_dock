@@ -81,7 +81,8 @@ docker run -d --rm \
   --gpus all \
   -p 8500:8501 \
   -v $(pwd):/workspace \
-  ghcr.io/pip700/dock:v5
+  --name streamdock dock ghcr.io/pip700/streamdock:v1
+
 ```
 
 After the container starts, open:
