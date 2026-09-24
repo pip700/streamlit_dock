@@ -81,7 +81,7 @@ docker run -d --rm \
   --gpus all \
   -p 8500:8501 \
   -v $(pwd):/workspace \
-  --name streamdock dock ghcr.io/pip700/streamdock:v1
+  --name streamdock ghcr.io/pip700/streamdock:v1
 
 ```
 
@@ -89,6 +89,12 @@ After the container starts, open:
 
 ```
 http://localhost:8500
+```
+
+After completion:
+
+```
+docker rm streamdock --force
 ```
 
 ---
