@@ -79,16 +79,16 @@ Run:
 ```bash
 docker run -d --rm \
   --gpus all \
-  -p 8500:8501 \
+  -p 8501:8501 -p 8502:8502 \
   -v $(pwd):/workspace \
-  --name streamdock ghcr.io/pip700/streamdock:v1
+  --name streamdock ghcr.io/pip700/streamdock:v2
 
 ```
 
 After the container starts, open:
 
 ```
-http://localhost:8500
+http://localhost:8501
 ```
 
 After completion:
