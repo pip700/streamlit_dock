@@ -81,7 +81,7 @@ docker run -d --rm \
   --gpus all \
   -p 8501:8501 -p 8502:8502 \
   -v $(pwd):/workspace \
-  --name streamdock ghcr.io/pip700/streamdock:v2
+  --name streamdock ghcr.io/pip700/streamdock:v1.1
 
 ```
 
